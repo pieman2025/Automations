@@ -1,0 +1,171 @@
+{
+  "name": "VP of sales agent (paid)",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 8
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -288,
+        0
+      ],
+      "id": "63a1f7fc-003d-4df6-a3a2-f1bce5659956",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "operation": "Run actor and get dataset",
+        "actorId": {
+          "__rl": true,
+          "value": "jljBwyyQakqrL1wae",
+          "mode": "list",
+          "cachedResultName": "🔥Apollo Scraper - Scrape upto 50k Leads (code_crafter/apollo-io-scraper)",
+          "cachedResultUrl": "https://console.apify.com/actors/jljBwyyQakqrL1wae/input"
+        },
+        "memory": 512,
+        "authentication": "apifyOAuth2Api"
+      },
+      "type": "@apify/n8n-nodes-apify.apify",
+      "typeVersion": 1,
+      "position": [
+        -64,
+        0
+      ],
+      "id": "0e7b3a47-b8e4-4717-a342-c8af341749be",
+      "name": "Apify",
+      "alwaysOutputData": true,
+      "credentials": {
+        "apifyOAuth2Api": {
+          "id": "r5neYz6L5wI9l9px",
+          "name": "Apify account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "spreadsheet",
+        "title": "leads",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        688,
+        0
+      ],
+      "id": "3b5825b6-0109-4f46-9017-47410fe69989",
+      "name": "Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "N0dlgW1mDG5mk1nj",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "batchSize": 5,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        160,
+        0
+      ],
+      "id": "a9a01a43-2aca-4cd2-a44e-5cecda9a7a16",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.removeDuplicates",
+      "typeVersion": 2,
+      "position": [
+        352,
+        192
+      ],
+      "id": "918cc887-ce52-4604-815b-e479b531f0b9",
+      "name": "Remove Duplicates"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Apify",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Apify": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Remove Duplicates",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Remove Duplicates": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "dbb8f457-0b37-43d3-ac5d-eb7cab9f40ed",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "ac742d0393a46e81472542b3a3f2677f0b86bc9db17b4669acb9e9d19c6ac6ca"
+  },
+  "id": "8TxbR6Ex9UtKrLi7",
+  "tags": []
+}
